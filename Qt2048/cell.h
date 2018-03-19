@@ -17,6 +17,7 @@ public:
                const QStyleOptionGraphicsItem *option,
                QWidget *widget);
     Cell& operator=(const Cell &cell);
+    Cell& operator+=(const Cell &cell);
 
     //pensar em botar ponteiro
     int value;

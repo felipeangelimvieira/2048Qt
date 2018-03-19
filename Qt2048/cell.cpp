@@ -44,12 +44,18 @@ void Cell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
     painter->drawRoundedRect(x(),y(),30,30,5,5);
     painter->drawText(boundaries,Qt::AlignCenter,QString::number(value));
 
-//    painter->drawText(boundaries,Qt::AlignCenter,QString::number(*value));
+
 }
 
 Cell& Cell::operator=(const Cell &cell)
 {
     this->value = cell.value;
     this->setPos(cell.x(),cell.y());
+    return *this;
+}
+
+Cell &Cell::operator+=(const Cell &cell)
+{
+    this->value += cell.value;
     return *this;
 }
