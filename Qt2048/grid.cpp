@@ -3,7 +3,7 @@
 #include "cell.h"
 #include "QDebug"
 #include "game.h"
-#include "damierexc.h"
+
 
 extern Game* game;
 
@@ -44,17 +44,17 @@ void Grid::start(){
 
 
     Cell *cell1 = new Cell(gridPositions[0][3][0],gridPositions[0][3][1],8);
-    //Cell *cell2 = new Cell(gridPositions[1][3][0],gridPositions[1][3][1],4);
+    Cell *cell2 = new Cell(gridPositions[2][2][0],gridPositions[1][3][1],4);
     Cell *cell3 = new Cell(gridPositions[2][3][0],gridPositions[2][3][1],4);
     Cell *cell4 = new Cell(gridPositions[3][3][0],gridPositions[3][3][1],4);
 
     gridCells[0][3] = cell1;
-    //gridCells[1][3] = cell2;
+    gridCells[2][2] = cell2;
     gridCells[2][3] = cell3;
     gridCells[3][3] = cell4;
 
     game->scene->addItem(cell1);
-    //game->scene->addItem(cell2);
+    game->scene->addItem(cell2);
     game->scene->addItem(cell3);
     game->scene->addItem(cell4);
 
@@ -154,14 +154,19 @@ void Grid::handleRight(){
                         }
                     }
                 }
-                else if(holeToTheRight[0] != -1)
+                else if(!canSumUp(i,j,cellToTheRight[0],cellToTheRight[1]))
                 {
-                    qDebug() << "moving 2";
-                    moveCell(i,j,holeToTheRight[0],holeToTheRight[1]); // on va bouger la cellule
-                    cellToTheRight[0] = holeToTheRight[0]; //maintenant elle est dans le trou
-                    cellToTheRight[1] = holeToTheRight[1];
-                    holeToTheRight[0] = {-1};
+                    cellToTheRight[0] = i;
+                    cellToTheRight[1] = j;
+                    if(holeToTheRight[0] != -1)
+                    {
+                        qDebug() << "moving 2";
+                        moveCell(i,j,holeToTheRight[0],holeToTheRight[1]); // on va bouger la cellule
+                        cellToTheRight[0] = holeToTheRight[0]; //maintenant elle est dans le trou
+                        cellToTheRight[1] = holeToTheRight[1];
+                        holeToTheRight[0] = {-1};
 
+                    }
                 }
             }
             else if(holeToTheRight[0] == -1)
@@ -200,7 +205,6 @@ void Grid::handleLeft(){
                         {
                             if (gridCells[i2][j] == NULL)
                             {
-                                qDebug() << "atualizando holetotheright" <<i2;
                                 holeToTheLeft[0] = i2;
                                 holeToTheLeft[1] = j;
                                 break;
@@ -225,15 +229,19 @@ void Grid::handleLeft(){
                         }
                     }
                 }
-                //possivel problema
-                else if(holeToTheLeft[0] != -1)
+                else if(!canSumUp(i,j,cellToTheLeft[0],cellToTheLeft[1]))
                 {
-                    qDebug() << "moving 2";
-                    moveCell(i,j,holeToTheLeft[0],holeToTheLeft[1]); // on va bouger la cellule
-                    cellToTheLeft[0] = holeToTheLeft[0]; //maintenant elle est dans le trou
-                    cellToTheLeft[1] = holeToTheLeft[1];
-                    holeToTheLeft[0] = {-1};
+                    cellToTheLeft[0] = i;
+                    cellToTheLeft[1] = j;
+                    if(holeToTheLeft[0] != -1)
+                    {
+                        qDebug() << "moving 2";
+                        moveCell(i,j,holeToTheLeft[0],holeToTheLeft[1]); // on va bouger la cellule
+                        cellToTheLeft[0] = holeToTheLeft[0]; //maintenant elle est dans le trou
+                        cellToTheLeft[1] = holeToTheLeft[1];
+                        holeToTheLeft[0] = {-1};
 
+                    }
                 }
             }
             else if(holeToTheLeft[0] == -1)
@@ -246,25 +254,161 @@ void Grid::handleLeft(){
 
 }
 void Grid::handleUp(){
+    for (int i = 0;i<4;i++)
+    {
+        int cellAbove[2] = {-1};
+        int holeAbove[2] = {-1};
+        for (int j = 0;j<4;j++)
+        {   // si il y a une valeur...
+            if (gridCells[i][j] != NULL)
+            {
+                // si aucune cellule avec une valeur a été trouvé
+                if (cellAbove[0] == -1)
+                {
+                    // si aucun trou a été trouvé
+                    if (holeAbove[0] == -1)
+                    {
+                        cellAbove[0] = i;  //on va pas bouger la cellule
+                        cellAbove[1] = j;
+                    }
+                    else
+                    {
+                        qDebug() << "moving 1";
+                        moveCell(i,j,holeAbove[0],holeAbove[1]); // on va bouger la cellule
+                        cellAbove[0] = holeAbove[0]; //maintenant elle est dans le trou
+                        cellAbove[1] = holeAbove[1];
+                        for (int j2 = 0; j2 < 4;j2++)
+                        {
+                            if (gridCells[i][j2] == NULL)
+                            {
+                                holeAbove[0] = i;
+                                holeAbove[1] = j2;
+                                break;
+                            }
+                        }
+                    }
+                }
+                // si cette cellule peux sommer avec celle plus à droite
+                else if(canSumUp(i,j,cellAbove[0],cellAbove[1]))
+                {
+                    qDebug() << "can Sum up";
+                    moveCell(i,j,cellAbove[0],cellAbove[1]);
+                    cellAbove[0] = {-1};
+                    for (int j2 = 0; j2 < 4;j2++)
+                    {
+                        if (gridCells[i][j2] == NULL)
+                        {
+                            holeAbove[0] = i;
+                            holeAbove[1] = j2;
+                            break;
+                        }
+                    }
+                }
+                else if(!canSumUp(i,j,cellAbove[0],cellAbove[1]))
+                {
+                    cellAbove[0] = i;
+                    cellAbove[1] = j;
+                    if(holeAbove[0] != -1)
+                    {
+                        qDebug() << "moving 2";
+                        moveCell(i,j,holeAbove[0],holeAbove[1]); // on va bouger la cellule
+                        cellAbove[0] = holeAbove[0]; //maintenant elle est dans le trou
+                        cellAbove[1] = holeAbove[1];
+                        holeAbove[0] = {-1};
+
+                    }
+                }
+            }
+            else if(holeAbove[0] == -1)
+            {
+                holeAbove[0] = i;
+                holeAbove[1] = j;
+            }
+        }
+    }
+
 
 }
 void Grid::handleDown(){
 
+    for (int i = 0;i<4;i++)
+    {
+        int cellBelow[2] = {-1};
+        int holeBelow[2] = {-1};
+        for (int j = 3;j>=0;j--)
+        {   // si il y a une valeur...
+            if (gridCells[i][j] != NULL)
+            {
+                // si aucune cellule avec une valeur a été trouvé
+                if (cellBelow[0] == -1)
+                {
+                    // si aucun trou a été trouvé
+                    if (holeBelow[0] == -1)
+                    {
+                        cellBelow[0] = i;  //on va pas bouger la cellule
+                        cellBelow[1] = j;
+                    }
+                    else
+                    {
+                        qDebug() << "moving 1";
+                        moveCell(i,j,holeBelow[0],holeBelow[1]); // on va bouger la cellule
+                        cellBelow[0] = holeBelow[0]; //maintenant elle est dans le trou
+                        cellBelow[1] = holeBelow[1];
+                        for (int j2 = 3;j2>=0;j2--)
+                        {
+                            if (gridCells[i][j2] == NULL)
+                            {
+                                holeBelow[0] = i;
+                                holeBelow[1] = j2;
+                                break;
+                            }
+                        }
+                    }
+                }
+                // si cette cellule peux sommer avec celle plus à droite
+                else if(canSumUp(i,j,cellBelow[0],cellBelow[1]))
+                {
+                    qDebug() << "can Sum up";
+                    moveCell(i,j,cellBelow[0],cellBelow[1]);
+                    cellBelow[0] = {-1};
+                    for (int j2 = 3;j2>=0;j2--)
+                    {
+                        if (gridCells[i][j2] == NULL)
+                        {
+                            holeBelow[0] = i;
+                            holeBelow[1] = j2;
+                            break;
+                        }
+                    }
+                }
+                else if(!canSumUp(i,j,cellBelow[0],cellBelow[1]))
+                {
+                    cellBelow[0] = i;
+                    cellBelow[1] = j;
+                    if(holeBelow[0] != -1)
+                    {
+                        qDebug() << "moving 2";
+                        moveCell(i,j,holeBelow[0],holeBelow[1]); // on va bouger la cellule
+                        cellBelow[0] = holeBelow[0]; //maintenant elle est dans le trou
+                        cellBelow[1] = holeBelow[1];
+                        holeBelow[0] = {-1};
+
+                    }
+                }
+            }
+            else if(holeBelow[0] == -1)
+            {
+                holeBelow[0] = i;
+                holeBelow[1] = j;
+            }
+        }
+    }
 }
 void Grid::keyPressEvent(QKeyEvent *e)
 {    
     if (e->key() == Qt::Key_Down)
     {   qDebug() << "Key Down";
-        for (int i = 0; i<gridCells.size();i++)
-        {
-            for (int j = gridCells[0].size()-1; j>= 0;j--)
-            {
-              if (gridCells[i][j] != NULL)
-              {
-                    moveCell(i,j,i,3);
-               }
-            }
-        }
+        handleDown();
         updateGrid();
     }
     if (e->key() == Qt::Key_Right)
@@ -281,16 +425,7 @@ void Grid::keyPressEvent(QKeyEvent *e)
 
     if (e->key() == Qt::Key_Up)
     {   qDebug() << "Key Up";
-        for (int i = 0; i<gridCells.size();i++)
-        {
-            for (int j = 0; j< gridCells.size();j++)
-            {
-                if (gridCells[i][j] != NULL)
-                {
-                    moveCell(i,j,i,0);
-                }
-            }
-        }
+        handleUp();
         updateGrid();
     }
 }

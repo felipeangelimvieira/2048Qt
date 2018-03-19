@@ -4,7 +4,6 @@
 #include <QWidget>
 #include <QVector>
 #include "cell.h"
-#include "damierexc.h"
 
 class Grid: public QGraphicsItem
 {
