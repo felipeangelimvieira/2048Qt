@@ -1,61 +1,91 @@
-#include "cell.h"
-#include <QString>
+#include "Cell.h"
 #include <QDebug>
 
-Cell::Cell()
+Cell::Cell(QObject *parent) : QObject(parent)
 {
 
 }
 
-Cell::Cell(int x1, int y1, int val, QGraphicsItem*  parent): QGraphicsItem(parent)
+Cell::Cell(int v,QObject *parent)
 {
-    value = val;
-    setPos(x1,y1);
+    this->val = v;
+    col = "#d4ccc4";
+    qDebug() << "Cell created. Val = " << val;
 }
 
-Cell::Cell(const Cell& C, QGraphicsItem* parent): QGraphicsItem(parent)
+void Cell::setValue(int i)
 {
-    this->value = C.value;
-    setPos(C.x(),C.y());
-}
-
-//création des bornes de l'objet graphique
-QRectF Cell::boundingRect() const
-{
-    return QRectF(x(),y(),30,30);
-}
-
-void Cell::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
-{
-    Q_UNUSED(option);
-    Q_UNUSED(widget);
-    qDebug() << "Coordinates: "<<QString::number(x());
-    QRectF boundaries = boundingRect();
-    QBrush brush;
-    brush.setColor(Qt::green);
-    if (value == 0)
+    this->setValue(QString::number(i));
+    QColor c;
+    switch (val)
     {
-    painter->setBrush(Qt::blue);
+        case 0: c = QColor("#d4ccc4");
+        break;
+        case 2: c = QColor(238,228,218);
+        break;
+        case 4: c = QColor(237,224,200);
+        break;
+        case 8: c = QColor(242,177,121);
+        break;
+        case 16: c = QColor(245,150,100);
+        break;
+        case 32: c = QColor(245,125,95);
+        break;
+        case 64: c = QColor(245,95,60);
+        break;
+        case 128: c = QColor(237,207,114);
+        break;
+        case 256: c = QColor(237,204,97);
+        break;
+        case 512: c = QColor(237,204,97);
+        break;
+        case 1024: c = QColor(237,204,97);
+        break;
+        case 2048: c = QColor(237,204,97);
+        break;
     }
-    else
-    {
-    painter->setBrush(Qt::green);
-    }
-    painter->drawRoundedRect(x(),y(),30,30,5,5);
-    painter->drawText(boundaries,Qt::AlignCenter,QString::number(value));
 
-
+    setColor(c);
 }
 
-Cell& Cell::operator=(const Cell &cell)
+
+void Cell::setValue(QString str)
 {
-    this->value = cell.value;
-    this->setPos(cell.x(),cell.y());
-    return *this;
+    val = str.toInt();
+    emit valueChanged();
 }
 
-Cell &Cell::operator+=(const Cell &cell)
+QString Cell::value()
 {
-    this->value += cell.value;
-    return *this;
+   QString s = QString::number(val);
+   if (val == 0) {s = "";}
+   return s;
+}
+
+void Cell::setColor(QColor c)
+{
+    col = c;
+    qDebug()<< val;
+    qDebug()<< col;
+    emit colorChanged();
+}
+
+QColor Cell::color()
+{
+   return col;
+}
+
+int Cell::getVal()
+{
+    return val;
+}
+
+bool Cell::isEmpty()
+{
+    return (val == 0);
+}
+
+bool Cell::notEmpty()
+{
+    return (val != 0);
 }

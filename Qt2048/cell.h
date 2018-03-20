@@ -1,27 +1,35 @@
 #ifndef CELL_H
 #define CELL_H
-#include <QGraphicsItem>
-#include <QPainter>
-#include <QGraphicsTextItem>
-#include <QDebug>
+#include <QString>
+#include <QObject>
+#include <QColor>
 
-class Cell: public QGraphicsItem
+class Cell : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(QString value READ value WRITE setValue NOTIFY valueChanged)
+    Q_PROPERTY(QColor color READ color WRITE setColor NOTIFY colorChanged)
 public:
-    Cell();
-    Cell(const Cell& C, QGraphicsItem* parent = NULL);
-    Cell(int x,int y, int val, QGraphicsItem* parent = NULL);
+    explicit Cell(QObject *parent = nullptr);
+    Cell(int v,QObject *parent = nullptr);
+    QString value();
+    QColor color();
+    void setValue(int i);
+    void setValue(QString str);
+    void setColor(QColor c);
+    int getVal();
+    bool isEmpty();
+    bool notEmpty();
 
-    QRectF boundingRect() const;
-    void paint(QPainter *painter,
-               const QStyleOptionGraphicsItem *option,
-               QWidget *widget);
-    Cell& operator=(const Cell &cell);
-    Cell& operator+=(const Cell &cell);
+signals:
+    // changement de la valeur de la case
+    void valueChanged();
+    void colorChanged();
+public slots:
 
-    //pensar em botar ponteiro
-    int value;
+private:
+    int val;
+    QColor col;
 };
-
 
 #endif // CELL_H
