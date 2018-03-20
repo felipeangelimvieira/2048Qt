@@ -36,9 +36,12 @@ void Game::start()
             gameContext->setContextProperty(s,board[i][j]);
         }
     }
-    //board[1][2]->setValue(16);
-    //board[3][1]->setValue(16);
-    fillRandom();
+    board[1][3]->setValue(16);
+    board[2][3]->setValue(16);
+    board[3][3]->setValue(16);
+    board[0][3]->setValue(16);
+    //fillRandom();
+    //fillRandom();
 
 
 }
@@ -61,7 +64,6 @@ void Game::fillRandom()
         //cases aléatoires
         int q1 = qrand()%(emptyCells.size());
         Cell* c1 = emptyCells[q1];
-        emptyCells.removeAt(q1);
 
         //valeurs aléatoires
         int v1 = qrand()%5;
@@ -70,25 +72,12 @@ void Game::fillRandom()
         c1->setValue(v1);
     }
 
-    if (emptyCells.size()>0)
-    {
-        int q2 = qrand()%(emptyCells.size());
-        Cell* c2 = emptyCells[q2];
-        emptyCells.removeAt(q2);
-        int v2 = qrand()%5;
-        if (v2<4){v2 = 2;}
-        else  { v2 = 4;}
-        c2->setValue(v2);
-    }
-
 }
 
 void Game::moveCell(int xi, int yi, int xf, int yf)
 {
-    qDebug()<<"Dentro de moveCell";
     if (xf == xi && yf == yi)
     {
-        qDebug() << "posição final igual inicial";
         return;
     }
     qDebug() << xi << ", " << yi << ", " << xf << ", " << yf;
@@ -251,7 +240,7 @@ void Game::handleLeft()
                     cellToTheLeft[0] = {-1};
                     for (int j2 = 0; j2 < 4;j2++)
                     {
-                        if (board[i][j2] == NULL)
+                        if (board[i][j2]->isEmpty())
                         {
                             holeToTheLeft[0] = i;
                             holeToTheLeft[1] = j2;
@@ -405,11 +394,13 @@ void Game::handleDown()
                     cellBelow[0] = {-1};
                     for (int i2 = 3;i2>=0;i2--)
                     {
-                        if (board[i2][j] == NULL)
+                        if (board[i2][j]->isEmpty())
                         {
+                            qDebug()<<"somou: " << i2<<", "<<j;
                             holeBelow[0] = i2;
                             holeBelow[1] = j;
                             break;
+
                         }
                     }
                 }
