@@ -238,16 +238,16 @@ Window {
 
     Rectangle {
         id: score
-        x: 220
         y: 44
         width: 70
         height: 70
         color: "#bbada0"
         radius: 3
-        anchors.bottom: table.top
-        anchors.bottomMargin: 111
-        anchors.right: table.right
-        anchors.rightMargin: 85
+        anchors.right: best.left
+        anchors.rightMargin: 15
+        anchors.bottom: best.top
+        anchors.bottomMargin: -70
+
 
         Text {
             id: scoreText
@@ -264,8 +264,32 @@ Window {
             horizontalAlignment: Text.AlignHCenter
             anchors.horizontalCenter: parent.horizontalCenter
             font.pixelSize: 15
+
         }
+
+        Text {
+            id: scoreValue
+            x: 12
+            y: 36
+            width: 50
+            height: 20
+            color: "#faf8ef"
+            text: game.score
+            anchors.horizontalCenterOffset: 0
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: newGame.top
+            anchors.bottomMargin: 42
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            font.bold: true
+            font.family: "Arial"
+            font.pixelSize: 15
+
+        }
+
     }
+
+
 
     Rectangle {
         id: best
@@ -296,13 +320,33 @@ Window {
             anchors.topMargin: 5
             horizontalAlignment: Text.AlignHCenter
         }
+
+        Text {
+            id: bestValue
+            x: 12
+            y: 36
+            width: 50
+            height: 20
+            color: "#faf8ef"
+            text: game.best
+            anchors.horizontalCenterOffset: 0
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: newGame.top
+            anchors.bottomMargin: 42
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            font.bold: true
+            font.family: "Arial"
+            font.pixelSize: 15
+
+        }
     }
 
     Rectangle {
         id: newGame
         x: 100
         width: 200
-        color: "#8f7a66"
+        color: mouseArea.containsMouse ? "red" : "#8f7a66"
         radius: 3
         anchors.top: score.bottom
         anchors.topMargin: 27
@@ -310,10 +354,13 @@ Window {
         anchors.bottomMargin: 27
         anchors.horizontalCenterOffset: 0
         anchors.horizontalCenter: parent.horizontalCenter
-
+        scale:  mouseArea.containsMouse ? 1.1 : 1
+        smooth: mouseArea.containsMouse
         MouseArea {
             id: mouseArea
             anchors.fill: parent
+            hoverEnabled: true
+            onClicked: game.newGame()
         }
 
         Text {
@@ -328,4 +375,5 @@ Window {
             font.pixelSize: 29
         }
     }
+
 }

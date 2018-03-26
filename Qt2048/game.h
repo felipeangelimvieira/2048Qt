@@ -10,6 +10,9 @@
 class Game : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString score READ score WRITE setScore NOTIFY scoreChanged)
+    Q_PROPERTY(QString best READ best WRITE setBest NOTIFY bestChanged)
+
 public:
     explicit Game(QObject *parent = nullptr);
     Game(QQmlContext* context,QObject *parent = nullptr);
@@ -24,16 +27,28 @@ public:
     bool canSumUp(int xi, int yi, int xf, int yf);
     void emptyCell(int i, int j);
 
+    QString score();
+    void setScore(int i);
+    void setScore(QString str);
+
+    QString best();
+    void setBest(int i);
+    void setBest(QString str);
+
 private:
     QQmlContext* gameContext;
     QVector<QVector<Cell*>> board;
+    int scoreVal;
+    int bestVal;
 signals:
-
+    void scoreChanged();
+    void bestChanged();
 public slots:
     void moveRight();
     void moveLeft();
     void moveUp();
     void moveDown();
+    void newGame();
 };
 
 #endif // GAME_H

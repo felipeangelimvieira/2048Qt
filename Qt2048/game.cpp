@@ -36,12 +36,10 @@ void Game::start()
             gameContext->setContextProperty(s,board[i][j]);
         }
     }
-    board[1][3]->setValue(16);
-    board[2][3]->setValue(16);
-    board[3][3]->setValue(16);
-    board[0][3]->setValue(16);
-    //fillRandom();
-    //fillRandom();
+    setScore(0);
+    setBest(0);
+    fillRandom();
+    fillRandom();
 
 
 }
@@ -82,6 +80,9 @@ void Game::moveCell(int xi, int yi, int xf, int yf)
     }
     qDebug() << xi << ", " << yi << ", " << xf << ", " << yf;
     //comment se porter si l'endroit final a déjà une cellule...
+    if (board[xf][yf]->getVal() > 0){
+        setScore(scoreVal + board[xi][yi]->getVal() + board[xf][yf]->getVal());
+    }
     board[xf][yf]->setValue(board[xi][yi]->getVal() + board[xf][yf]->getVal());
     emptyCell(xi,yi);
 
@@ -182,7 +183,15 @@ void Game::handleRight()
                         moveCell(i,j,holeToTheRight[0],holeToTheRight[1]); // on va bouger la cellule
                         cellToTheRight[0] = holeToTheRight[0]; //maintenant elle est dans le trou
                         cellToTheRight[1] = holeToTheRight[1];
-                        holeToTheRight[0] = {-1};
+                        for (int j2 = 3; j2>=0;j2--)
+                        {
+                            if (board[i][j2]->isEmpty())
+                            {
+                                holeToTheRight[0] = i;
+                                holeToTheRight[1] = j2;
+                                break;
+                            }
+                        }
 
                     }
                 }
@@ -225,8 +234,10 @@ void Game::handleLeft()
                         {
                             if (board[i][j2]->isEmpty())
                             {
+                                qDebug() << "Finding other holes..." ;
                                 holeToTheLeft[0] = i;
                                 holeToTheLeft[1] = j2;
+                                qDebug() << i <<", " << j2;
                                 break;
                             }
                         }
@@ -258,8 +269,15 @@ void Game::handleLeft()
                         moveCell(i,j,holeToTheLeft[0],holeToTheLeft[1]); // on va bouger la cellule
                         cellToTheLeft[0] = holeToTheLeft[0]; //maintenant elle est dans le trou
                         cellToTheLeft[1] = holeToTheLeft[1];
-                        holeToTheLeft[0] = {-1};
-
+                        for (int j2 = 0; j2 < 4;j2++)
+                        {
+                            if (board[i][j2]->isEmpty())
+                            {
+                                holeToTheLeft[0] = i;
+                                holeToTheLeft[1] = j2;
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -335,7 +353,15 @@ void Game::handleUp()
                         moveCell(i,j,holeAbove[0],holeAbove[1]); // on va bouger la cellule
                         cellAbove[0] = holeAbove[0]; //maintenant elle est dans le trou
                         cellAbove[1] = holeAbove[1];
-                        holeAbove[0] = {-1};
+                        for (int i2 = 0; i2 < 4;i2++)
+                        {
+                            if (board[i2][j]->isEmpty())
+                            {
+                                holeAbove[0] = i2;
+                                holeAbove[1] = j;
+                                break;
+                            }
+                        }
 
                     }
                 }
@@ -400,7 +426,6 @@ void Game::handleDown()
                             holeBelow[0] = i2;
                             holeBelow[1] = j;
                             break;
-
                         }
                     }
                 }
@@ -414,8 +439,15 @@ void Game::handleDown()
                         moveCell(i,j,holeBelow[0],holeBelow[1]); // on va bouger la cellule
                         cellBelow[0] = holeBelow[0]; //maintenant elle est dans le trou
                         cellBelow[1] = holeBelow[1];
-                        holeBelow[0] = {-1};
-
+                        for (int i2 = 3;i2>=0;i2--)
+                        {
+                            if (board[i2][j]->isEmpty())
+                            {
+                                holeBelow[0] = i2;
+                                holeBelow[1] = j;
+                                break;
+                            }
+                        }
                     }
                 }
             }
@@ -438,4 +470,50 @@ bool Game::canSumUp(int xi, int yi, int xf, int yf)
         return true;
     }
     return false;
+}
+
+void Game::newGame(){
+    for (int i = 0;i<4;i++)
+    {
+        for (int j = 0; j<4;j++)
+        {
+            if (board[i][j]->getVal() >0)
+            {
+            emptyCell(i,j);
+            }
+        }
+    }
+    fillRandom();
+    fillRandom();
+    setScore(0);
+}
+
+QString Game::score(){
+    QString s = QString::number(scoreVal);
+    return s;
+}
+void Game::setScore(int i){
+    QString s = QString::number(i);
+    scoreVal = i;
+    if (scoreVal > bestVal)
+    {
+        setBest(scoreVal);
+    }
+    setScore(s);
+}
+void Game::setScore(QString str){
+    emit scoreChanged();
+}
+
+QString Game::best(){
+    QString s = QString::number(bestVal);
+    return s;
+}
+void Game::setBest(int i){
+    QString s = QString::number(i);
+    bestVal = i;
+    setBest(s);
+}
+void Game::setBest(QString str){
+    emit bestChanged();
 }
