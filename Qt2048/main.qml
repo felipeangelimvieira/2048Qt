@@ -1,5 +1,7 @@
 import QtQuick 2.9
 import QtQuick.Window 2.2
+import QtQuick.Extras 1.4
+import QtQuick.Controls 2.3
 
 Window {
     id: window
@@ -8,6 +10,17 @@ Window {
     height: 600
     color: "#faf8ef"
     title: qsTr("2048")
+
+    Rectangle
+    {
+
+        anchors.bottom: parent.bottom
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        visible: false
+
+    }
 
 
     Rectangle {
@@ -289,8 +302,6 @@ Window {
 
     }
 
-
-
     Rectangle {
         id: best
         x: 305
@@ -374,6 +385,23 @@ Window {
             anchors.verticalCenter: parent.verticalCenter
             font.pixelSize: 29
         }
+    }
+
+    Image {
+        id: arrowleft
+        x: 9
+        y: 148
+        width: 64
+        height: 44
+        opacity: arrowLeftArea.containsMouse ? 0.7 : 0.3
+        source: "arrowRight.png"
+
+        MouseArea {
+            id: arrowLeftArea
+            anchors.fill: parent
+            hoverEnabled: true
+        }
+
     }
 
 }
