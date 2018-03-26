@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.3
 
-Item{
+Item {
     property string txt
     property color c: "#d4ccc4"
 Rectangle {
