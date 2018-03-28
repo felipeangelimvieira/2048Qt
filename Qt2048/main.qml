@@ -537,7 +537,6 @@ Window {
             text: game.score
             anchors.horizontalCenterOffset: 0
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: newGame.top
             anchors.bottomMargin: 42
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
@@ -591,7 +590,6 @@ Window {
             text: game.best
             anchors.horizontalCenterOffset: 0
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: newGame.top
             anchors.bottomMargin: 42
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
@@ -638,10 +636,14 @@ Window {
 
     Image {
         id: arrowleft
-        x: 9
         y: 148
         width: 64
         height: 44
+        anchors.verticalCenter: newGame.verticalCenter
+        anchors.bottom: table.top
+        anchors.bottomMargin: 33
+        anchors.left: table.left
+        anchors.leftMargin: -16
         opacity: arrowLeftArea.containsMouse ? 0.7 : 0.3
         source: "arrowRight.png"
 
@@ -651,6 +653,27 @@ Window {
             hoverEnabled: true
         }
 
+    }
+
+    Image {
+        id: arrowright
+        x: 317
+        y: 148
+        width: 64
+        height: 44
+        anchors.bottom: table.top
+        anchors.bottomMargin: 33
+        anchors.right: table.right
+        anchors.rightMargin: -16
+        anchors.verticalCenter: newGame.verticalCenter
+        opacity: arrowRightArea.containsMouse ? 0.7 : 0.3
+        source: "arrowLeftt.png"
+
+        MouseArea {
+            id: arrowRightArea
+            anchors.fill: parent
+            hoverEnabled: true
+        }
     }
 
 }

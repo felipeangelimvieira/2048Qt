@@ -3,5 +3,6 @@
         <file>main.qml</file>
         <file>Cell.qml</file>
         <file>arrowRight.png</file>
+        <file>arrowLeftt.png</file>
     </qresource>
 </RCC>
