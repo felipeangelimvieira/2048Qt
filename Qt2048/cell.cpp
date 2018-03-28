@@ -75,6 +75,31 @@ QColor Cell::color()
    return col;
 }
 
+int Cell::xpos()
+{
+   return x;
+}
+
+
+void Cell::setXpos(int i)
+{
+    x = i;
+    emit xposChanged();
+}
+
+int Cell::ypos()
+{
+   return y;
+}
+
+
+void Cell::setYpos(int i)
+{
+    y = i;
+    emit yposChanged();
+}
+
+
 int Cell::getVal()
 {
     return val;

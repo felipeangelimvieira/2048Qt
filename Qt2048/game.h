@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QQmlContext>
 #include <QVector>
+#include <QQuickItem>
 
 #include "cell.h"
 
@@ -35,11 +36,17 @@ public:
     void setBest(int i);
     void setBest(QString str);
 
+    void attachTable(QQuickItem *table);
+    void updatePositions();
+
 private:
     QQmlContext* gameContext;
+    QQuickItem* parentTable;
     QVector<QVector<Cell*>> board;
     int scoreVal;
     int bestVal;
+    QVector<QVector<QPointF>> boardPositions;
+
 signals:
     void scoreChanged();
     void bestChanged();

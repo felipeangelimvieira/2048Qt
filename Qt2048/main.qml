@@ -5,6 +5,7 @@ import QtQuick.Controls 2.3
 
 Window {
     id: window
+
     visible: true
     width: 400
     height: 600
@@ -25,6 +26,7 @@ Window {
 
     Rectangle {
         id: table
+        objectName: "table"
         x: 141
         y: 228
         width: 350
@@ -56,177 +58,422 @@ Window {
         }
 
         Cell{
+            objectName: "pos1"
             id: pos1
+            xpos: cell1.xpos
+            ypos: cell1.ypos
             txt: cell1.value
             c: cell1.color
+            visible: true
             width: 75
             height: 75
             anchors.top: parent.top
-            anchors.topMargin: 10
+            anchors.topMargin: ypos
             anchors.left: parent.left
-            anchors.leftMargin: 10
+            anchors.leftMargin: xpos
+
         }
+
 
         Cell {
             id: pos2
+            objectName: "pos2"
+            xpos: cell2.xpos
+            ypos: cell2.ypos
             txt: cell2.value
             c: cell2.color
             width: 75
             height: 75
             anchors.top: parent.top
-            anchors.topMargin: 10
-            anchors.left: pos1.right
-            anchors.leftMargin: 10
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos3
+            objectName: "pos3"
+            xpos: cell3.xpos
+            ypos: cell3.ypos
             txt: cell3.value
             c: cell3.color
             width: 75
             height: 75
             anchors.top: parent.top
-            anchors.topMargin: 10
-            anchors.leftMargin: 10
-            anchors.left: pos2.right
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos4
+            objectName: "pos4"
             txt: cell4.value
             c: cell4.color
+            xpos: cell4.xpos
+            ypos: cell4.ypos
             width: 75
             height: 75
             anchors.top: parent.top
-            anchors.topMargin: 10
-            anchors.right: parent.right
-            anchors.rightMargin: 10
-            anchors.leftMargin: 10
-            anchors.left: pos3.right
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos5
+            objectName: "pos5"
             txt: cell5.value
             c: cell5.color
-            x: 10
+            xpos: cell5.xpos
+            ypos: cell5.ypos
             width: 75
             height: 75
-            anchors.top: pos1.bottom
-            anchors.topMargin: 10
+            anchors.top: parent.top
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos6
+            objectName: "pos6"
             txt: cell6.value
             c: cell6.color
-            x: 95
-            y: 95
+            xpos: cell6.xpos
+            ypos: cell6.ypos
             width: 75
             height: 75
+            anchors.top: parent.top
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos7
+            objectName: "pos7"
             txt: cell7.value
             c: cell7.color
-            x: 180
-            y: 95
+            xpos: cell7.xpos
+            ypos: cell7.ypos
             width: 75
             height: 75
+            anchors.top: parent.top
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos8
+            objectName: "pos8"
             txt: cell8.value
             c: cell8.color
-            x: 265
-            y: 95
+            xpos: cell8.xpos
+            ypos: cell8.ypos
             width: 75
             height: 75
+            anchors.top: parent.top
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos9
+            objectName: "pos9"
             txt: cell9.value
             c: cell9.color
-            x: 10
+            xpos: cell9.xpos
+            ypos: cell9.ypos
             width: 75
             height: 75
-            anchors.top: pos5.bottom
-            anchors.topMargin: 10
+            anchors.top: parent.top
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos10
+            objectName: "pos10"
             txt: cell10.value
             c: cell10.color
-            x: 95
-            y: 180
+            xpos: cell10.xpos
+            ypos: cell10.ypos
             width: 75
             height: 75
+            anchors.top: parent.top
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos11
+            objectName: "pos11"
             txt: cell11.value
             c: cell11.color
-            x: 180
-            y: 180
+            xpos: cell11.xpos
+            ypos: cell11.ypos
             width: 75
             height: 75
+            anchors.top: parent.top
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos12
+            objectName: "pos12"
             txt: cell12.value
             c: cell12.color
-            x: 265
-            y: 180
+            xpos: cell12.xpos
+            ypos: cell12.ypos
             width: 75
             height: 75
+            anchors.top: parent.top
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos13
+            objectName: "pos13"
             txt: cell13.value
             c: cell13.color
-            x: 10
-            y: 267
+            xpos: cell13.xpos
+            ypos: cell13.ypos
             width: 75
             height: 75
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 10
+            anchors.top: parent.top
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos14
+            objectName: "pos14"
             txt: cell14.value
             c: cell14.color
-            x: 95
-            y: 265
+            xpos: cell14.xpos
+            ypos: cell14.ypos
             width: 75
             height: 75
+            anchors.top: parent.top
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos15
+            objectName: "pos15"
             txt: cell15.value
             c: cell15.color
-            x: 180
-            y: 265
+            xpos: cell15.xpos
+            ypos: cell15.ypos
             width: 75
             height: 75
+            anchors.top: parent.top
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
         }
 
         Cell {
             id: pos16
+            objectName: "pos16"
             txt: cell16.value
             c: cell16.color
-            x: 265
-            y: 265
+            xpos: cell16.xpos
+            ypos: cell16.ypos
             width: 75
             height: 75
+            anchors.top: parent.top
+            anchors.topMargin: ypos
+            anchors.left: parent.left
+            anchors.leftMargin: xpos
+        }
+
+        Rectangle {
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        }
+
+        Rectangle{
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 95
+        }
+
+        Rectangle{
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 180
+        }
+
+        Rectangle{
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 265
+        }
+
+        Rectangle {
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 95
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        }
+
+        Rectangle{
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 95
+        anchors.left: parent.left
+        anchors.leftMargin: 95
+        }
+
+        Rectangle{
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 95
+        anchors.left: parent.left
+        anchors.leftMargin: 180
+        }
+
+        Rectangle{
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 95
+        anchors.left: parent.left
+        anchors.leftMargin: 265
+        }
+
+        Rectangle {
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 180
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        }
+
+        Rectangle{
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 180
+        anchors.left: parent.left
+        anchors.leftMargin: 95
+        }
+
+        Rectangle{
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 180
+        anchors.left: parent.left
+        anchors.leftMargin: 180
+        }
+
+        Rectangle{
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 180
+        anchors.left: parent.left
+        anchors.leftMargin: 265
+        }
+
+        Rectangle {
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 265
+        anchors.left: parent.left
+        anchors.leftMargin: 10
+        }
+
+        Rectangle{
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 265
+        anchors.left: parent.left
+        anchors.leftMargin: 95
+        }
+
+        Rectangle{
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 265
+        anchors.left: parent.left
+        anchors.leftMargin: 180
+        }
+
+        Rectangle{
+        width: 75
+        height: 75
+        radius : 3
+        color : "#d4ccc4"
+        anchors.top: parent.top
+        anchors.topMargin: 265
+        anchors.left: parent.left
+        anchors.leftMargin: 265
         }
     }
 
@@ -299,6 +546,8 @@ Window {
             font.pixelSize: 15
 
         }
+
+
 
     }
 

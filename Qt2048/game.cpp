@@ -21,7 +21,9 @@ void Game::start()
 
     //le damier
     QVector<QVector<Cell*>> vecCell =  QVector<QVector<Cell*>>(4,QVector<Cell*>(4));
+    QVector<QVector<QPointF>> vecPos =  QVector<QVector<QPointF>>(4,QVector<QPointF>(4));
     this->board = vecCell;
+    this->boardPositions = vecPos;
 
     //liason entre les cases QML et la classe Cell C++
     QString s;
@@ -32,10 +34,13 @@ void Game::start()
             Cell* c = new Cell(0);
             board[i][j] = c;
             s = QString("cell%1").arg(i*4 + j + 1);
+            boardPositions[i][j] = QPointF(10 + j*85,10+i*85);
             qDebug() << s;
             gameContext->setContextProperty(s,board[i][j]);
         }
     }
+
+    updatePositions();
     setScore(0);
     setBest(0);
     fillRandom();
@@ -83,9 +88,11 @@ void Game::moveCell(int xi, int yi, int xf, int yf)
     if (board[xf][yf]->getVal() > 0){
         setScore(scoreVal + board[xi][yi]->getVal() + board[xf][yf]->getVal());
     }
-    board[xf][yf]->setValue(board[xi][yi]->getVal() + board[xf][yf]->getVal());
-    emptyCell(xi,yi);
-
+    board[xi][yi]->setValue(board[xi][yi]->getVal() + board[xf][yf]->getVal());
+    emptyCell(xf,yf);
+    Cell* temp = board[xf][yf];
+    board[xf][yf] = board[xi][yi];
+    board[xi][yi] = temp;
 }
 
 void Game::emptyCell(int i, int j)
@@ -97,6 +104,7 @@ void Game::moveRight()
 {
     qDebug() << "Right arrow pressed";
     handleRight();
+    updatePositions();
     fillRandom();
 }
 
@@ -104,6 +112,7 @@ void Game::moveLeft()
 {
     qDebug() << "Left arrow pressed";
     handleLeft();
+    updatePositions();
     fillRandom();
 }
 
@@ -111,6 +120,7 @@ void Game::moveUp()
 {
     qDebug() << "Up arrow pressed";
     handleUp();
+    updatePositions();
     fillRandom();
 }
 
@@ -118,6 +128,7 @@ void Game::moveDown()
 {
     qDebug() << "Down arrow pressed";
     handleDown();
+    updatePositions();
     fillRandom();
 }
 
@@ -516,4 +527,21 @@ void Game::setBest(int i){
 }
 void Game::setBest(QString str){
     emit bestChanged();
+}
+
+void Game::attachTable(QQuickItem* table)
+{
+    parentTable = table;
+}
+
+void Game::updatePositions()
+{
+    for (int i = 0;i<4;i++)
+    {
+        for (int j = 0; j<4;j++)
+        {
+            board[i][j]->setXpos(boardPositions[i][j].x());
+            board[i][j]->setYpos(boardPositions[i][j].y());
+        }
+    }
 }

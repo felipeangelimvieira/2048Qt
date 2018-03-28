@@ -8,8 +8,11 @@
 #include <QQuickView>
 #include <QQUickItem>
 #include <QDebug>
+#include <QQmlComponent>
+#include <QPointF>
 #include "game.h"
 #include "Cell.h"
+
 
 int main(int argc, char *argv[])
 {
@@ -23,7 +26,34 @@ int main(int argc, char *argv[])
     game.start();
 
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
+
     QObject *root = engine.rootObjects()[0];
+    QObject* const tableObj = root->findChild<QObject*>("table");
+    QQuickItem *table = qobject_cast<QQuickItem*>(tableObj);
+
+    game.attachTable(table);
+
+    QQuickItem *cell = table->findChild<QQuickItem*>(QString("pos1"));
+    cell->setParentItem(table);
+    //cell->setProperty("xpos",120);
+
+    cell->dumpObjectInfo();
+
+    /*
+    qDebug() << child->children().size();
+    QQmlComponent component(&engine, "qrc:/Cell.qml");
+    if (component.isReady()){
+    QObject *object = component.create();
+    object->setProperty("z",20);
+    object->setParent(child);
+    engine.setObjectOwnership(object, engine.CppOwnership);
+    object->dumpObjectInfo();
+    }
+
+
+
+*/
+
 
 
 
