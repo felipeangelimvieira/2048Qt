@@ -52,6 +52,7 @@ private:
     int scoreVal;
     int bestVal;
     bool gameOverVal;
+    bool somethingChanged;
     QVector<QVector<QPointF>> boardPositions;
 
 signals:

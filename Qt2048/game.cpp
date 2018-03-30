@@ -35,7 +35,6 @@ void Game::start()
             board[i][j] = c;
             s = QString("cell%1").arg(i*4 + j + 1);
             boardPositions[i][j] = QPointF(10 + j*85,10+i*85);
-            qDebug() << s;
             gameContext->setContextProperty(s,board[i][j]);
         }
     }
@@ -83,7 +82,6 @@ void Game::moveCell(int xi, int yi, int xf, int yf)
     {
         return;
     }
-    qDebug() << xi << ", " << yi << ", " << xf << ", " << yf;
     //comment se porter si l'endroit final a déjà une cellule...
     if (board[xf][yf]->getVal() > 0){
         setScore(scoreVal + board[xi][yi]->getVal() + board[xf][yf]->getVal());
@@ -93,6 +91,7 @@ void Game::moveCell(int xi, int yi, int xf, int yf)
     Cell* temp = board[xf][yf];
     board[xf][yf] = board[xi][yi];
     board[xi][yi] = temp;
+    somethingChanged = true;
 }
 
 void Game::emptyCell(int i, int j)
@@ -102,34 +101,44 @@ void Game::emptyCell(int i, int j)
 
 void Game::moveRight()
 {
-    qDebug() << "Right arrow pressed";
+    somethingChanged = false;
     handleRight();
     updatePositions();
+    if (somethingChanged){
     fillRandom();
+    }
+
 }
 
 void Game::moveLeft()
 {
-    qDebug() << "Left arrow pressed";
+    somethingChanged = false;
     handleLeft();
     updatePositions();
-    fillRandom();
+    if (somethingChanged){
+        fillRandom();
+    }
 }
 
 void Game::moveUp()
 {
-    qDebug() << "Up arrow pressed";
+    somethingChanged = false;
     handleUp();
     updatePositions();
     fillRandom();
+    if (somethingChanged){
+        fillRandom();
+    }
 }
 
 void Game::moveDown()
 {
-    qDebug() << "Down arrow pressed";
+    somethingChanged = false;
     handleDown();
     updatePositions();
+    if (somethingChanged){
     fillRandom();
+    }
 }
 
 void Game::handleRight()
@@ -171,7 +180,7 @@ void Game::handleRight()
                 // si cette cellule peux sommer avec celle plus à droite
                 else if(canSumUp(i,j,cellToTheRight[0],cellToTheRight[1]))
                 {
-                    qDebug() << "can Sum up";
+
                     moveCell(i,j,cellToTheRight[0],cellToTheRight[1]);
                     cellToTheRight[0] = {-1};
                     for (int j2 = 3; j2>=0;j2--)
@@ -190,7 +199,7 @@ void Game::handleRight()
                     cellToTheRight[1] = j;
                     if(holeToTheRight[0] != -1)
                     {
-                        qDebug() << "moving 2";
+
                         moveCell(i,j,holeToTheRight[0],holeToTheRight[1]); // on va bouger la cellule
                         cellToTheRight[0] = holeToTheRight[0]; //maintenant elle est dans le trou
                         cellToTheRight[1] = holeToTheRight[1];
@@ -245,10 +254,8 @@ void Game::handleLeft()
                         {
                             if (board[i][j2]->isEmpty())
                             {
-                                qDebug() << "Finding other holes..." ;
                                 holeToTheLeft[0] = i;
                                 holeToTheLeft[1] = j2;
-                                qDebug() << i <<", " << j2;
                                 break;
                             }
                         }
@@ -257,7 +264,6 @@ void Game::handleLeft()
                 // si cette cellule peux sommer avec celle plus à droite
                 else if(canSumUp(i,j,cellToTheLeft[0],cellToTheLeft[1]))
                 {
-                    qDebug() << "can Sum up";
                     moveCell(i,j,cellToTheLeft[0],cellToTheLeft[1]);
                     cellToTheLeft[0] = {-1};
                     for (int j2 = 0; j2 < 4;j2++)
@@ -276,7 +282,6 @@ void Game::handleLeft()
                     cellToTheLeft[1] = j;
                     if(holeToTheLeft[0] != -1)
                     {
-                        qDebug() << "moving 2";
                         moveCell(i,j,holeToTheLeft[0],holeToTheLeft[1]); // on va bouger la cellule
                         cellToTheLeft[0] = holeToTheLeft[0]; //maintenant elle est dans le trou
                         cellToTheLeft[1] = holeToTheLeft[1];
@@ -323,7 +328,6 @@ void Game::handleUp()
                     }
                     else
                     {
-                        qDebug() << "moving 1";
                         moveCell(i,j,holeAbove[0],holeAbove[1]); // on va bouger la cellule
                         cellAbove[0] = holeAbove[0]; //maintenant elle est dans le trou
                         cellAbove[1] = holeAbove[1];
@@ -341,7 +345,6 @@ void Game::handleUp()
                 // si cette cellule peux sommer avec celle plus à droite
                 else if(canSumUp(i,j,cellAbove[0],cellAbove[1]))
                 {
-                    qDebug() << "can Sum up";
                     moveCell(i,j,cellAbove[0],cellAbove[1]);
                     cellAbove[0] = {-1};
                     for (int i2 = 0; i2 < 4;i2++)
@@ -360,7 +363,6 @@ void Game::handleUp()
                     cellAbove[1] = j;
                     if(holeAbove[0] != -1)
                     {
-                        qDebug() << "moving 2";
                         moveCell(i,j,holeAbove[0],holeAbove[1]); // on va bouger la cellule
                         cellAbove[0] = holeAbove[0]; //maintenant elle est dans le trou
                         cellAbove[1] = holeAbove[1];
@@ -408,7 +410,6 @@ void Game::handleDown()
                     }
                     else
                     {
-                        qDebug() << "moving 1";
                         moveCell(i,j,holeBelow[0],holeBelow[1]); // on va bouger la cellule
                         cellBelow[0] = holeBelow[0]; //maintenant elle est dans le trou
                         cellBelow[1] = holeBelow[1];
@@ -426,14 +427,12 @@ void Game::handleDown()
                 // si cette cellule peux sommer avec celle plus à droite
                 else if(canSumUp(i,j,cellBelow[0],cellBelow[1]))
                 {
-                    qDebug() << "can Sum up";
                     moveCell(i,j,cellBelow[0],cellBelow[1]);
                     cellBelow[0] = {-1};
                     for (int i2 = 3;i2>=0;i2--)
                     {
                         if (board[i2][j]->isEmpty())
                         {
-                            qDebug()<<"somou: " << i2<<", "<<j;
                             holeBelow[0] = i2;
                             holeBelow[1] = j;
                             break;
@@ -446,7 +445,6 @@ void Game::handleDown()
                     cellBelow[1] = j;
                     if(holeBelow[0] != -1)
                     {
-                        qDebug() << "moving 2";
                         moveCell(i,j,holeBelow[0],holeBelow[1]); // on va bouger la cellule
                         cellBelow[0] = holeBelow[0]; //maintenant elle est dans le trou
                         cellBelow[1] = holeBelow[1];
@@ -549,7 +547,6 @@ bool Game::gameOver(){
 }
 void Game::setGameOver(bool b){
     gameOverVal = b;
-    qDebug() << "GAME OVER?"<<gameOverVal;
     emit gameOverChanged();
 }
 
