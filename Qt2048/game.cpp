@@ -3,6 +3,7 @@
 #include <QDebug>
 #include <QVector>
 #include <QtGlobal>
+#include <time.h>
 
 Game::Game(QObject *parent) : QObject(parent)
 {    
@@ -39,12 +40,12 @@ void Game::start()
         }
     }
 
-    updatePositions();
+
     setScore(0);
     setBest(0);
     fillRandom();
     fillRandom();
-
+    updatePositions();
 
 }
 
@@ -64,7 +65,12 @@ void Game::fillRandom()
     if (emptyCells.size()>0)
     {
         //cases aléatoires
-        int q1 = qrand()%(emptyCells.size());
+        //int q1 = qrand()%(emptyCells.size()) ne marche pas (les nombres générés se
+        // repètent
+        time_t seconds;
+        seconds = time(NULL);
+        long int t = static_cast<long int>(seconds);
+        int q1 = t%emptyCells.size();
         Cell* c1 = emptyCells[q1];
 
         //valeurs aléatoires
@@ -512,6 +518,7 @@ void Game::setScore(int i){
     setScore(s);
 }
 void Game::setScore(QString str){
+    Q_UNUSED(str);
     emit scoreChanged();
 }
 
@@ -525,6 +532,7 @@ void Game::setBest(int i){
     setBest(s);
 }
 void Game::setBest(QString str){
+    Q_UNUSED(str);
     emit bestChanged();
 }
 
