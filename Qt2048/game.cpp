@@ -108,9 +108,10 @@ void Game::moveRight()
     handleRight();
     updatePositions();
     if (somethingChanged){
-    fillRandom();
-    turn++;
-    saveMemory();
+        fillRandom();
+        deletePlaysAfter();
+        turn++;
+        saveMemory();
     }
 }
 
@@ -121,6 +122,7 @@ void Game::moveLeft()
     updatePositions();
     if (somethingChanged){
         fillRandom();
+        deletePlaysAfter();
         turn++;
         saveMemory();
     }
@@ -133,10 +135,10 @@ void Game::moveUp()
     updatePositions();
     if (somethingChanged){
         fillRandom();
+        deletePlaysAfter();
         turn++;
         saveMemory();
     }
-
 }
 
 void Game::moveDown()
@@ -145,9 +147,10 @@ void Game::moveDown()
     handleDown();
     updatePositions();
     if (somethingChanged){
-    fillRandom();
-    turn++;
-    saveMemory();
+        fillRandom();
+        deletePlaysAfter();
+        turn++;
+        saveMemory();
     }
 
 }
@@ -507,7 +510,9 @@ void Game::newGame(){
     fillRandom();
     fillRandom();
     setScore(0);
+    deleteAll();
     turn = 0;
+    saveMemory();
 }
 
 void Game::returnArrow(){
@@ -648,6 +653,71 @@ void Game::saveMemory(){
     }
 
     lastTurnS = turn;
+}
+
+void Game::deletePlaysAfter(){
+    if (turn == lastTurnS)
+        return;
+
+    Play* r;
+    int count = lastTurnS;
+
+    while(count > turn)
+    {
+        r = myMemory.lastPlay;
+        for (int i = 0; i < 4; ++i)
+            delete [] r->playMemory[i];
+
+        delete [] r->playMemory;
+        delete r->nextPlay;
+        delete r->prePlay;
+        delete r;
+
+        myMemory.lastPlay=myMemory.lastPlay->prePlay;
+        myMemory.lastPlay->nextPlay = NULL;
+
+        count--;
+    }
+}
+
+void Game::deleteAll(){
+
+    Play* r;
+    int count = lastTurnS;
+
+    r = myMemory.lastPlay;
+
+    while(r->prePlay != NULL)
+    {
+        for (int i = 0; i < 4; ++i)
+            delete [] r->playMemory[i];
+
+        delete [] r->playMemory;
+        delete r->nextPlay;
+
+        r->prePlay->nextPlay = NULL;
+        myMemory.lastPlay=r->prePlay;
+
+        delete r->prePlay;
+        delete r;
+
+        count--;
+        r = myMemory.lastPlay;
+    }
+
+    for (int i = 0; i < 4; ++i)
+        delete [] r->playMemory[i];
+
+    delete [] r->playMemory;
+    delete r->nextPlay;
+    delete r->prePlay;
+    delete r;
+
+    count--;
+    r = myMemory.lastPlay;
+
+    myMemory.firstPlay = NULL;
+    myMemory.lastPlay = NULL;
 }
 
 QString Game::score(){

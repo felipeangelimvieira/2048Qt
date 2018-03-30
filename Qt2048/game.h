@@ -59,6 +59,9 @@ public:
 
     void saveMemory();
 
+    void deletePlaysAfter();
+    void deleteAll();
+
 private:
     QQmlContext* gameContext;
     QQuickItem* parentTable;
