@@ -484,6 +484,7 @@ bool Game::canSumUp(int xi, int yi, int xf, int yf)
 }
 
 void Game::newGame(){
+    setGameOver(false);
     for (int i = 0;i<4;i++)
     {
         for (int j = 0; j<4;j++)
@@ -529,11 +530,6 @@ void Game::setBest(QString str){
     emit bestChanged();
 }
 
-void Game::attachTable(QQuickItem* table)
-{
-    parentTable = table;
-}
-
 void Game::updatePositions()
 {
     for (int i = 0;i<4;i++)
@@ -544,4 +540,61 @@ void Game::updatePositions()
             board[i][j]->setYpos(boardPositions[i][j].y());
         }
     }
+    setGameOver(checkGameOver());
+}
+
+bool Game::gameOver(){
+    return gameOverVal;
+
+}
+void Game::setGameOver(bool b){
+    gameOverVal = b;
+    qDebug() << "GAME OVER?"<<gameOverVal;
+    emit gameOverChanged();
+}
+
+bool Game::checkGameOver(){
+    bool gameover = true;
+
+    //check if any cell is empty
+    for (int i = 0; i<4;i++)
+    {
+        for (int j = 0; j<4; j++)
+        {
+            if (board[i][j]->getVal() == 0)
+            {
+                gameover = false;
+                return gameover;
+            }
+        }
+    }
+
+    //checking horizontal movements
+    for (int i = 0; i<4;i++)
+    {
+        for (int j = 0; j<3; j++)
+        {
+            if (board[i][j+1]->getVal() == board[i][j]->getVal())
+            {
+                gameover = false;
+                return gameover;
+            }
+        }
+    }
+
+    //checking vertical movements
+    for (int j = 0; j<4;j++)
+    {
+        for (int i = 0; i<3; i++)
+        {
+            if (board[i+1][j]->getVal() == board[i][j]->getVal())
+            {
+                gameover = false;
+                return gameover;
+            }
+        }
+    }
+
+    return gameover;
+
 }

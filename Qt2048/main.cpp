@@ -31,8 +31,6 @@ int main(int argc, char *argv[])
     QObject* const tableObj = root->findChild<QObject*>("table");
     QQuickItem *table = qobject_cast<QQuickItem*>(tableObj);
 
-    game.attachTable(table);
-
     QQuickItem *cell = table->findChild<QQuickItem*>(QString("pos1"));
     cell->setParentItem(table);
     //cell->setProperty("xpos",120);

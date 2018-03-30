@@ -39,6 +39,29 @@ Window {
         anchors.horizontalCenterOffset: 0
         anchors.horizontalCenter: parent.horizontalCenter
 
+        Rectangle{
+        id: gameOver
+        width: parent.width
+        height: parent.height
+        color: "white"
+        opacity: 0.7
+        visible: game.gameOver
+        z:100
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        Text{
+            id: gameOverTxt
+            text: "Game over!"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            font.bold: true
+            font.family: "Arial"
+            color: "#8f7a66"
+            font.pixelSize: 36
+        }
+        }
+
         Keys.onPressed: {
             switch (event.key)
             {
