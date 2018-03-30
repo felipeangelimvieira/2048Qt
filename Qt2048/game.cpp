@@ -25,6 +25,9 @@ void Game::start()
     QVector<QVector<QPointF>> vecPos =  QVector<QVector<QPointF>>(4,QVector<QPointF>(4));
     this->board = vecCell;
     this->boardPositions = vecPos;
+    this->turn = 0;
+    this->myMemory.firstPlay = NULL;
+    this->myMemory.lastPlay = NULL;
 
     //liason entre les cases QML et la classe Cell C++
     QString s;
@@ -45,6 +48,7 @@ void Game::start()
     setBest(0);
     fillRandom();
     fillRandom();
+    saveMemory();
     updatePositions();
 
 }
@@ -111,9 +115,11 @@ void Game::moveRight()
     handleRight();
     updatePositions();
     if (somethingChanged){
-    fillRandom();
+        fillRandom();
+        deletePlaysAfter();
+        turn++;
+        saveMemory();
     }
-
 }
 
 void Game::moveLeft()
@@ -123,6 +129,9 @@ void Game::moveLeft()
     updatePositions();
     if (somethingChanged){
         fillRandom();
+        deletePlaysAfter();
+        turn++;
+        saveMemory();
     }
 }
 
@@ -131,9 +140,11 @@ void Game::moveUp()
     somethingChanged = false;
     handleUp();
     updatePositions();
-    fillRandom();
     if (somethingChanged){
         fillRandom();
+        deletePlaysAfter();
+        turn++;
+        saveMemory();
     }
 }
 
@@ -143,8 +154,12 @@ void Game::moveDown()
     handleDown();
     updatePositions();
     if (somethingChanged){
-    fillRandom();
+        fillRandom();
+        deletePlaysAfter();
+        turn++;
+        saveMemory();
     }
+
 }
 
 void Game::handleRight()
@@ -491,7 +506,7 @@ void Game::newGame(){
     setGameOver(false);
     for (int i = 0;i<4;i++)
     {
-        for (int j = 0; j<4;j++)
+        for (int j = 0;j < 4;j++)
         {
             if (board[i][j]->getVal() >0)
             {
@@ -502,6 +517,214 @@ void Game::newGame(){
     fillRandom();
     fillRandom();
     setScore(0);
+    deleteAll();
+    turn = 0;
+    saveMemory();
+}
+
+void Game::returnArrow(){
+    Play* reach;
+
+    if(turn == 0)
+    {
+        return;
+    }
+
+    turn--;
+    int count;
+
+    if(turn > lastTurnS/2)
+    {
+        count = lastTurnS;
+        reach = myMemory.lastPlay;
+
+        while(count != turn)
+        {
+            reach = reach->prePlay;
+            count--;
+        }
+
+        for (int i = 0;i < 4;i++)
+        {
+            for (int j = 0;j < 4;j++)
+            {
+                board[i][j]->setValue(reach->playMemory[i][j]);
+            }
+        }
+    }
+    else
+    {
+        count = 0;
+        reach = myMemory.firstPlay;
+
+        while(count != turn)
+        {
+            reach = reach->nextPlay;
+            count++;
+        }
+
+        for (int i = 0;i < 4;i++)
+        {
+            for (int j = 0;j < 4;j++)
+            {
+                board[i][j]->setValue(reach->playMemory[i][j]);
+            }
+        }
+    }
+    updatePositions();
+    setScore(reach->playScore);
+}
+
+void Game::forwardArrow(){
+    Play* reach;
+
+    if(turn == lastTurnS)
+    {
+        return;
+    }
+
+    turn++;
+    int count;
+
+    if(turn > lastTurnS/2)
+    {
+        count = lastTurnS;
+        reach = myMemory.lastPlay;
+
+        while(count != turn)
+        {
+            reach = reach->prePlay;
+            count--;
+        }
+
+        for (int i = 0;i < 4;i++)
+        {
+            for (int j = 0;j < 4;j++)
+            {
+                board[i][j]->setValue(reach->playMemory[i][j]);
+            }
+        }
+    }
+    else
+    {
+        count = 0;
+        reach = myMemory.firstPlay;
+
+        while(count != turn)
+        {
+            reach = reach->nextPlay;
+            count++;
+        }
+
+        for (int i = 0;i < 4;i++)
+        {
+            for (int j = 0;j < 4;j++)
+            {
+                board[i][j]->setValue(reach->playMemory[i][j]);
+            }
+        }
+    }
+    updatePositions();
+    setScore(reach->playScore);
+}
+
+void Game::saveMemory(){
+    Play* p;
+    p = new Play;
+    p->playMemory = new int*[4];
+    p->playScore = scoreVal;
+
+    for (int i = 0; i < 4; ++i)
+        p->playMemory[i] = new int[4];
+
+    for (int i = 0;i < 4;i++)
+    {
+        for (int j = 0;j < 4;j++)
+        {
+            p->playMemory[i][j] = board[i][j]->getVal();
+        }
+    }
+
+    if(myMemory.firstPlay == NULL)
+    {
+        p->prePlay = NULL;
+        p->nextPlay = NULL;
+        myMemory.firstPlay = p;
+        myMemory.lastPlay = p;
+    }
+    else{
+        p->prePlay = myMemory.lastPlay;
+        p->nextPlay = NULL;
+        myMemory.lastPlay->nextPlay = p;
+        myMemory.lastPlay = p;
+    }
+
+    lastTurnS = turn;
+}
+
+void Game::deletePlaysAfter(){
+    if (turn == lastTurnS)
+        return;
+
+    Play* r;
+    int count = lastTurnS;
+
+    while(count > turn)
+    {
+        r = myMemory.lastPlay;
+        for (int i = 0; i < 4; ++i)
+            delete [] r->playMemory[i];
+
+        delete [] r->playMemory;
+        delete r->nextPlay;
+        delete r->prePlay;
+        delete r;
+
+        myMemory.lastPlay=myMemory.lastPlay->prePlay;
+        myMemory.lastPlay->nextPlay = NULL;
+
+        count--;
+    }
+}
+
+void Game::deleteAll(){
+
+    Play* r;
+    int count = lastTurnS;
+
+    r = myMemory.lastPlay;
+
+    while(r->prePlay != NULL)
+    {
+        for (int i = 0; i < 4; ++i)
+            delete [] r->playMemory[i];
+
+        delete [] r->playMemory;
+        delete r->nextPlay;
+
+        r->prePlay->nextPlay = NULL;
+        myMemory.lastPlay=r->prePlay;
+
+        delete r->prePlay;
+        delete r;
+
+        count--;
+        r = myMemory.lastPlay;
+    }
+
+    for (int i = 0; i < 4; ++i)
+        delete [] r->playMemory[i];
+
+    delete [] r->playMemory;
+    delete r->nextPlay;
+    delete r->prePlay;
+    delete r;
+
+    count--;
+    r = myMemory.lastPlay;
+
+    myMemory.firstPlay = NULL;
+    myMemory.lastPlay = NULL;
 }
 
 QString Game::score(){

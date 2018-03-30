@@ -687,6 +687,7 @@ Window {
             id: arrowLeftArea
             anchors.fill: parent
             hoverEnabled: true
+            onClicked: game.returnArrow()
         }
 
     }
@@ -706,9 +707,11 @@ Window {
         source: "arrowLeftt.png"
 
         MouseArea {
+
             id: arrowRightArea
             anchors.fill: parent
             hoverEnabled: true
+            onClicked: game.forwardArrow()
         }
     }
 

@@ -8,6 +8,18 @@
 
 #include "cell.h"
 
+typedef struct play {
+    int** playMemory;
+    struct play* nextPlay;
+    struct play* prePlay;
+    int playScore;
+} Play;
+
+typedef struct memory {
+    Play* firstPlay;
+    Play* lastPlay;
+} Memory;
+
 class Game : public QObject
 {
     Q_OBJECT
@@ -45,6 +57,11 @@ public:
     void updatePositions();
     bool checkGameOver();
 
+    void saveMemory();
+
+    void deletePlaysAfter();
+    void deleteAll();
+
 private:
     QQmlContext* gameContext;
     QQuickItem* parentTable;
@@ -54,6 +71,9 @@ private:
     bool gameOverVal;
     bool somethingChanged;
     QVector<QVector<QPointF>> boardPositions;
+    int turn;
+    Memory myMemory;
+    int lastTurnS;
 
 signals:
     void scoreChanged();
@@ -65,6 +85,8 @@ public slots:
     void moveUp();
     void moveDown();
     void newGame();
+    void returnArrow();
+    void forwardArrow();
 };
 
 #endif // GAME_H
