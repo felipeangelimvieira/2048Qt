@@ -83,7 +83,7 @@ Item{
     function zet(){
         if (txt == "")
             return 0
-        return parseInt(txt)
+        return 20
     }
 
 

@@ -39,6 +39,42 @@ Window {
         anchors.horizontalCenterOffset: 0
         anchors.horizontalCenter: parent.horizontalCenter
 
+        Rectangle{
+        id: gameOver
+        width: parent.width
+        height: parent.height
+        color: "white"
+        opacity: setopacity(game.gameOver)
+        visible: true
+        z:100
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 1500
+                easing.type: Easing.InSine
+            }
+        }
+
+        Text{
+            id: gameOverTxt
+            text: "Game over!"
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.verticalCenter: parent.verticalCenter
+            font.bold: true
+            font.family: "Arial"
+            color: "#8f7a66"
+            font.pixelSize: 36
+        }
+
+        function setopacity(bol){
+            if (bol === true)
+                return 0.7
+            return 0
+        }
+        }
+
         Keys.onPressed: {
             switch (event.key)
             {
