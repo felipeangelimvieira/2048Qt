@@ -44,11 +44,18 @@ Window {
         width: parent.width
         height: parent.height
         color: "white"
-        opacity: 0.7
-        visible: game.gameOver
+        opacity: setopacity(game.gameOver)
+        visible: true
         z:100
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 1500
+                easing.type: Easing.InSine
+            }
+        }
 
         Text{
             id: gameOverTxt
@@ -59,6 +66,12 @@ Window {
             font.family: "Arial"
             color: "#8f7a66"
             font.pixelSize: 36
+        }
+
+        function setopacity(bol){
+            if (bol === true)
+                return 0.7
+            return 0
         }
         }
 

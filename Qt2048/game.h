@@ -18,6 +18,7 @@ class Game : public QObject
 public:
     explicit Game(QObject *parent = nullptr);
     Game(QQmlContext* context,QObject *parent = nullptr);
+
     void start();
     void fillRandom();
 
@@ -43,6 +44,7 @@ public:
 
     void updatePositions();
     bool checkGameOver();
+
 private:
     QQmlContext* gameContext;
     QQuickItem* parentTable;
