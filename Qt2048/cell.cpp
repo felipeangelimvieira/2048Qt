@@ -65,8 +65,6 @@ QString Cell::value()
 void Cell::setColor(QColor c)
 {
     col = c;
-    qDebug()<< val;
-    qDebug()<< col;
     emit colorChanged();
 }
 

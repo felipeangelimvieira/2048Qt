@@ -644,6 +644,8 @@ void Game::saveMemory(){
             p->playMemory[i][j] = board[i][j]->getVal();
         }
     }
+    qDebug() << "CRIANDO :" << p;
+
 
     if(myMemory.firstPlay == NULL)
     {
@@ -651,77 +653,68 @@ void Game::saveMemory(){
         p->nextPlay = NULL;
         myMemory.firstPlay = p;
         myMemory.lastPlay = p;
+        qDebug() << "Pre Play 1: " << myMemory.lastPlay->prePlay;
+        qDebug() << "Play " << myMemory.lastPlay;
+        qDebug() << "Next Play 1: " << myMemory.lastPlay->nextPlay;
     }
     else{
         p->prePlay = myMemory.lastPlay;
+
         p->nextPlay = NULL;
         myMemory.lastPlay->nextPlay = p;
         myMemory.lastPlay = p;
+        qDebug() << "Pre Play 1: " << myMemory.lastPlay->prePlay;
+        qDebug() << "Play " << myMemory.lastPlay;
+        qDebug() << "Next Play 1: " << myMemory.lastPlay->nextPlay;
     }
+
 
     lastTurnS = turn;
 }
 
 void Game::deletePlaysAfter(){
-    if (turn == lastTurnS)
-        return;
-
     Play* r;
+    Play* pre;
     int count = lastTurnS;
+
+    r = myMemory.lastPlay;
 
     while(count > turn)
     {
-        r = myMemory.lastPlay;
+        pre = r->prePlay;
         for (int i = 0; i < 4; ++i)
             delete [] r->playMemory[i];
-
+        qDebug() << "DELETE PLAYS AFTER: " << r;
         delete [] r->playMemory;
         delete r->nextPlay;
-        delete r->prePlay;
         delete r;
-
-        myMemory.lastPlay=myMemory.lastPlay->prePlay;
-        myMemory.lastPlay->nextPlay = NULL;
-
+        r = pre;
         count--;
     }
+    myMemory.lastPlay = r;
+    r->nextPlay = NULL;
 }
 
 void Game::deleteAll(){
 
-    Play* r;
-    int count = lastTurnS;
+        Play* r;
+        Play *pre;
 
-    r = myMemory.lastPlay;
 
-    while(r->prePlay != NULL)
-    {
-        for (int i = 0; i < 4; ++i)
-            delete [] r->playMemory[i];
-
-        delete [] r->playMemory;
-        delete r->nextPlay;
-
-        r->prePlay->nextPlay = NULL;
-        myMemory.lastPlay=r->prePlay;
-
-        delete r->prePlay;
-        delete r;
-
-        count--;
         r = myMemory.lastPlay;
-    }
 
-    for (int i = 0; i < 4; ++i)
-        delete [] r->playMemory[i];
+        while(r != NULL)
+        {
+            pre = r->prePlay;
+            for (int i = 0; i < 4; ++i)
+                delete [] r->playMemory[i];
+            qDebug() << "Delete All : r= " << r << ", pre = " << pre;
+            delete [] r->playMemory;
+            delete r->nextPlay;
+            delete r;
+            r = pre;
 
-    delete [] r->playMemory;
-    delete r->nextPlay;
-    delete r->prePlay;
-    delete r;
-
-    count--;
-    r = myMemory.lastPlay;
+        }
 
     myMemory.firstPlay = NULL;
     myMemory.lastPlay = NULL;
