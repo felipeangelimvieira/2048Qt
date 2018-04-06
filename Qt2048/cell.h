@@ -29,6 +29,8 @@ public:
     bool isEmpty();
     bool notEmpty();
 
+
+
 signals:
     // changement de la valeur de la case
     void valueChanged();

@@ -14,13 +14,11 @@ Window {
 
     Rectangle
     {
-
         anchors.bottom: parent.bottom
         anchors.top: parent.top
         anchors.left: parent.left
         anchors.right: parent.right
         visible: false
-
     }
 
 
@@ -67,7 +65,8 @@ Window {
             color: "#8f7a66"
             font.pixelSize: 36
         }
-
+// cette fonction va gérer la varation de l'opacité de
+// la cellule
         function setopacity(bol){
             if (bol === true)
                 return 0.7
@@ -335,7 +334,7 @@ Window {
             anchors.left: parent.left
             anchors.leftMargin: xpos
         }
-
+// les rectangles suivants vont contruire l'arrière-plan
         Rectangle {
         width: 75
         height: 75

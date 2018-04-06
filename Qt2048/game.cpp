@@ -5,13 +5,17 @@
 #include <QtGlobal>
 #include <time.h>
 
+// default constructor
 Game::Game(QObject *parent) : QObject(parent)
 {    
 
 }
 
+// contructeur que prend en compte le context de l'application
 Game::Game(QQmlContext* context ,QObject *parent) : QObject(parent)
 {
+    //on attache le nom "game" dans le QML à cette instance
+    // de Game
      context->setContextProperty("game",this);
      gameContext = context;
 }
@@ -20,7 +24,7 @@ void Game::start()
 {
 
 
-    //le damier
+    //Initialisation du damier
     QVector<QVector<Cell*>> vecCell =  QVector<QVector<Cell*>>(4,QVector<Cell*>(4));
     QVector<QVector<QPointF>> vecPos =  QVector<QVector<QPointF>>(4,QVector<QPointF>(4));
     this->board = vecCell;
@@ -43,7 +47,8 @@ void Game::start()
         }
     }
 
-
+    // définition du score, du best et tirage au sort
+    // de deux cellules
     setScore(0);
     setBest(0);
     fillRandom();
@@ -53,6 +58,8 @@ void Game::start()
 
 }
 
+// cherche une cellule vide et attribue
+// une valeur à cette cellule
 void Game::fillRandom()
 {   QVector<Cell*> emptyCells;
     for (int i = 0; i<4;i++)
@@ -69,10 +76,9 @@ void Game::fillRandom()
     if (emptyCells.size()>0)
     {
         //cases aléatoires
-        //int q1 = qrand()%(emptyCells.size()) ne marche pas (les nombres générés se
-        // repètent
         time_t seconds;
         seconds = time(NULL);
+
         long int t = static_cast<long int>(seconds);
         int q1 = t%emptyCells.size();
         Cell* c1 = emptyCells[q1];
@@ -86,29 +92,37 @@ void Game::fillRandom()
 
 }
 
+// déplace une cellule de (xi,yi) à (xf,yf)
 void Game::moveCell(int xi, int yi, int xf, int yf)
 {
     if (xf == xi && yf == yi)
     {
         return;
     }
+
     //comment se porter si l'endroit final a déjà une cellule...
     if (board[xf][yf]->getVal() > 0){
         setScore(scoreVal + board[xi][yi]->getVal() + board[xf][yf]->getVal());
     }
     board[xi][yi]->setValue(board[xi][yi]->getVal() + board[xf][yf]->getVal());
     emptyCell(xf,yf);
+
+    // on change le placement de la cellule à (xi,yi)
+    // avec la position de celle à (xf,yf)
     Cell* temp = board[xf][yf];
     board[xf][yf] = board[xi][yi];
     board[xi][yi] = temp;
     somethingChanged = true;
 }
 
+// vider une cellule
 void Game::emptyCell(int i, int j)
 {
     board[i][j]->setValue(0);
 }
 
+// fonction appellé au moment que l'interface QML
+// reçoit l'event de clic du boutton à droit
 void Game::moveRight()
 {
     somethingChanged = false;
@@ -122,6 +136,8 @@ void Game::moveRight()
     }
 }
 
+// similairement, appellée quand l'interface
+// reçoit l'event du clic du boutton gauche
 void Game::moveLeft()
 {
     somethingChanged = false;
@@ -135,6 +151,7 @@ void Game::moveLeft()
     }
 }
 
+// boutton Up
 void Game::moveUp()
 {
     somethingChanged = false;
@@ -148,6 +165,7 @@ void Game::moveUp()
     }
 }
 
+//boutton down
 void Game::moveDown()
 {
     somethingChanged = false;
@@ -162,6 +180,7 @@ void Game::moveDown()
 
 }
 
+// gestion des mouvement des cellules vers la droite
 void Game::handleRight()
 {
     for (int i = 0;i<4;i++)
@@ -198,7 +217,7 @@ void Game::handleRight()
                         }
                     }
                 }
-                // si cette cellule peux sommer avec celle plus à droite
+                // si cette cellule peut sommer avec celle plus à droite
                 else if(canSumUp(i,j,cellToTheRight[0],cellToTheRight[1]))
                 {
 
@@ -214,6 +233,7 @@ void Game::handleRight()
                         }
                     }
                 }
+                // si cette cellule ne peut pas être sommée avec celle plus à droite...
                 else if(!canSumUp(i,j,cellToTheRight[0],cellToTheRight[1]))
                 {
                     cellToTheRight[0] = i;
@@ -237,6 +257,7 @@ void Game::handleRight()
                     }
                 }
             }
+            // si cette cellule est le trou plus à droite
             else if(holeToTheRight[0] == -1)
             {
                 holeToTheRight[0] = i;
@@ -247,6 +268,7 @@ void Game::handleRight()
 
 }
 
+// gestion des mouvement des cellules vers la gauche
 void Game::handleLeft()
 {
     for (int i = 0;i<4;i++)
@@ -328,6 +350,8 @@ void Game::handleLeft()
 
 }
 
+
+// gestion des mouvement des cellules vers le haut
 void Game::handleUp()
 {
     for (int j = 0;j<4;j++)
@@ -410,6 +434,7 @@ void Game::handleUp()
 
 }
 
+// gestion des mouvement des cellules vers le bas
 void Game::handleDown()
 {
     for (int j = 0;j<4;j++)
@@ -491,6 +516,8 @@ void Game::handleDown()
 
 }
 
+// vérifie si les cellules à (xi,yi) et (xf,yf) peuvent
+// être sommées
 bool Game::canSumUp(int xi, int yi, int xf, int yf)
 {
     Cell *celli = board[xi][yi];
@@ -502,6 +529,7 @@ bool Game::canSumUp(int xi, int yi, int xf, int yf)
     return false;
 }
 
+// recommence le jeu
 void Game::newGame(){
     setGameOver(false);
     for (int i = 0;i<4;i++)
@@ -514,6 +542,8 @@ void Game::newGame(){
             }
         }
     }
+
+    //on revient aux configurations initiales
     fillRandom();
     fillRandom();
     setScore(0);
@@ -522,6 +552,7 @@ void Game::newGame(){
     saveMemory();
 }
 
+// marche-arrière
 void Game::returnArrow(){
     Play* reach;
 
@@ -575,6 +606,7 @@ void Game::returnArrow(){
     setScore(reach->playScore);
 }
 
+// reprendre la main sur la partie à l'endroit où il se trouve
 void Game::forwardArrow(){
     Play* reach;
 
@@ -720,10 +752,13 @@ void Game::deleteAll(){
     myMemory.lastPlay = NULL;
 }
 
+//communication du score avec l'interface QML
 QString Game::score(){
     QString s = QString::number(scoreVal);
     return s;
 }
+
+//définition du nouveau score
 void Game::setScore(int i){
     QString s = QString::number(i);
     scoreVal = i;
@@ -733,11 +768,15 @@ void Game::setScore(int i){
     }
     setScore(s);
 }
+
+//définition du nouveau score et
+// émission du signal
 void Game::setScore(QString str){
     Q_UNUSED(str);
     emit scoreChanged();
 }
 
+// communication du best avec l'interface QML
 QString Game::best(){
     QString s = QString::number(bestVal);
     return s;
@@ -752,6 +791,8 @@ void Game::setBest(QString str){
     emit bestChanged();
 }
 
+//changement des coordonnées X et Y des cellules
+// à partir des nouvelles positions
 void Game::updatePositions()
 {
     for (int i = 0;i<4;i++)
@@ -765,15 +806,21 @@ void Game::updatePositions()
     setGameOver(checkGameOver());
 }
 
+// communication de la fin du jeu
+// à l'interface QML
 bool Game::gameOver(){
     return gameOverVal;
 
 }
+
 void Game::setGameOver(bool b){
     gameOverVal = b;
     emit gameOverChanged();
 }
 
+
+// vérifie si on est arrivé
+// à la fin du jeu (si on a perdu)
 bool Game::checkGameOver(){
     bool gameover = true;
 
@@ -819,3 +866,4 @@ bool Game::checkGameOver(){
     return gameover;
 
 }
+
